@@ -22,7 +22,7 @@ namespace UnitTests.App.Tests
                 Age = rd.Next(12, 20),
                 Remark = "Remarks" + rd.Next(1, 100000)
             };
-            Assert.True(r.AddBySql(student));
+            Assert.True(false, "This test needs an implementation");
         }
 
         //[Fact()]

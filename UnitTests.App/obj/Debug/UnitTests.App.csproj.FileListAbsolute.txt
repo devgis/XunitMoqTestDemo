@@ -9,4 +9,3 @@ D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.csproj.
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.csproj.CopyComplete
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.exe
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.pdb
-D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.csprojAssemblyReference.cache

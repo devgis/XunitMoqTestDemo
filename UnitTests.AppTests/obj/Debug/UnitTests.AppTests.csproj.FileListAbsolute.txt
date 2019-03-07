@@ -23,3 +23,15 @@ D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\UnitTests.AppTes
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\EntityFramework.dll
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\EntityFramework.SqlServer.dll
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\EntityFramework.SqlServer.xml
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\Castle.Core.dll
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\Moq.dll
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\nunit.framework.dll
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\System.Threading.Tasks.Extensions.dll
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\Castle.Core.xml
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\Moq.pdb
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\Moq.xml
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\nunit.framework.pdb
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\nunit.framework.xml
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.AppTests\bin\Debug\System.Threading.Tasks.Extensions.xml

@@ -1,0 +1,14 @@
+[Fact()]
+        public void AddBySqlTest()
+        {
+            Random rd = new Random();
+            StudentRepositories r = new StudentRepositories();
+            Student student = new Student()
+            {
+                ID = Guid.NewGuid().ToString(),
+                Name = "уехЩ" + rd.Next(1, 100000),
+                Age = rd.Next(12, 20),
+                Remark = "Remarks" + rd.Next(1, 100000)
+            };
+            Assert.True(false, "This test needs an implementation");
+        }
