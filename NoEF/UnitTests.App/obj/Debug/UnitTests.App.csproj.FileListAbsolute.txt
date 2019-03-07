@@ -15,4 +15,3 @@ D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\obj\Debug\UnitTests.App.pd
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\UnitTests.App.exe.config
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\UnitTests.App.exe
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\UnitTests.App.pdb
-D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\obj\Debug\UnitTests.App.csprojAssemblyReference.cache

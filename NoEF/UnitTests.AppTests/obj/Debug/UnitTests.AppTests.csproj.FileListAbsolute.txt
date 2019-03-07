@@ -20,3 +20,12 @@ D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\obj\Debug\UnitTests.A
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\obj\Debug\UnitTests.AppTests.dll
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\obj\Debug\UnitTests.AppTests.pdb
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\UnitTests.AppTests.dll.config
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\Castle.Core.dll
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\Moq.dll
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\System.Threading.Tasks.Extensions.dll
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\Castle.Core.xml
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\Moq.pdb
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\Moq.xml
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\System.Threading.Tasks.Extensions.xml
