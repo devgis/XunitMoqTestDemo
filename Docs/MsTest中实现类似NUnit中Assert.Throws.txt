@@ -1,0 +1,107 @@
+MsTest中实现类似NUnit中Assert.Throws
+      我们做单元测试NUnit中,有一个断言Assert.Throws很好用,但当我们使用MsTest时你需要这样写:
+
+   1:          [TestMethod]
+   2:          [ExpectedException(typeof(ArgumentNullException))]
+   3:          public void WriteToTextFile()
+   4:          {
+   5:              PDFUtility.WriteToTextFile("D:\\ACA.pdf", null);
+   6:          }
+     现在让我们来扩展一下也实现类似成功能,增加一个类,代码如下:
+
+    /// <summary>
+    /// Useful assertions for actions that are expected to throw an exception.
+    /// </summary>
+    public static class ExceptionAssert
+    {
+        /// <summary>
+        /// Executes an exception, expecting an exception to be thrown.
+        /// Like Assert.Throws in NUnit.
+        /// </summary>
+        /// <param name="action">The action to execute</param>
+        /// <returns>The exception thrown by the action</returns>
+        public static Exception Throws(Action action)
+        {
+            return Throws(action, null);
+        }
+ 
+        /// <summary>
+        /// Executes an exception, expecting an exception to be thrown.
+        /// Like Assert.Throws in NUnit.
+        /// </summary>
+        /// <param name="action">The action to execute</param>
+        /// <param name="message">The error message if the expected exception is not thrown</param>
+        /// <returns>The exception thrown by the action</returns>
+        public static Exception Throws(Action action, string message)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                // The action method has thrown the expected exception.
+                // Return the exception, in case the unit test wants to perform further assertions on it.
+                return ex;
+            }
+ 
+            // If we end up here, the expected exception was not thrown. Fail!
+            throw new AssertFailedException(message ?? "Expected exception was not thrown.");
+        }
+ 
+        /// <summary>
+        /// Executes an exception, expecting an exception of a specific type to be thrown.
+        /// Like Assert.Throws in NUnit.
+        /// </summary>
+        /// <param name="action">The action to execute</param>
+        /// <returns>The exception thrown by the action</returns>
+        public static T Throws<T>(Action action) where T : Exception
+        {
+            return Throws<T>(action, null);
+        }
+ 
+        /// <summary>
+        /// Executes an exception, expecting an exception of a specific type to be thrown.
+        /// Like Assert.Throws in NUnit.
+        /// </summary>
+        /// <param name="action">The action to execute</param>
+        /// <param name="message">The error message if the expected exception is not thrown</param>
+        /// <returns>The exception thrown by the action</returns>
+        public static T Throws<T>(Action action, string message) where T : Exception
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                T actual = ex as T;
+                if (actual == null)
+                {
+                    throw new AssertFailedException(message ?? String.Format("Expected exception of type {0} not thrown. Actual exception type was {1}.", typeof(T), ex.GetType()));
+                }
+ 
+                // The action method has thrown the expected exception of type 'T'.
+                // Return the exception, in case the unit test wants to perform further assertions on it.
+                return actual;
+            }
+ 
+            // If we end up here, the expected exception of type 'T' was not thrown. Fail!
+            throw new AssertFailedException(message ?? String.Format("Expected exception of type {0} not thrown.", typeof(T)));
+        }
+    }
+好了,现在我们在MsTest中可以这样了,看下面代码:
+
+   1:          [TestMethod]
+   2:          public void WriteToTextFile2()
+   3:          {
+   4:              //Implement Assert.Throws in MSTest
+   5:              ExceptionAssert.Throws<ArgumentNullException>(()=> PDFUtility.WriteToTextFile("D:\\ACA.pdf", null)
+   6:                  ,"Output file path should not be null");
+   7:   
+   8:          }
+
+看上去是不是感觉很COOL. 希望这篇文章对您做单元测试有帮助.
+
+
+https://www.cnblogs.com/wintersun/archive/2011/09/04/2166773.html
