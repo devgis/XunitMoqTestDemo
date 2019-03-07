@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -13,7 +14,7 @@ namespace UnitTests.App
         {
             try
             {
-                db.Database.Create();
+                //db.Database.Create();
             }
             catch
             { }
@@ -26,10 +27,22 @@ namespace UnitTests.App
                 return db.Students;
             }
         }
-        public void Add(Student model)
+        public int Add(Student model)
         {
             db.Set<Student>().Add(model);
-            db.SaveChanges();
+            return db.SaveChanges();
+        }
+
+        public bool AddBySql(Student model)
+        {
+            string sql = "insert into Students(ID,Name,Age,Remark)values(@ID,@Name,@Age,@Remark)";
+            SqlParameter[] parameters = new SqlParameter[] {
+                new SqlParameter("ID",model.ID),
+                new SqlParameter("Name",model.Name),
+                new SqlParameter("Age",model.Age),
+                new SqlParameter("Remark",model.Remark)
+            };
+            return SQLServerHelper.ExecSql(sql,parameters);
         }
 
         public Student AddRetrun(Student model)

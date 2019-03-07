@@ -5,8 +5,8 @@ D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\bin\Debug\EntityFramework.dll
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\bin\Debug\EntityFramework.SqlServer.dll
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\bin\Debug\EntityFramework.xml
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\bin\Debug\EntityFramework.SqlServer.xml
-D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.csprojAssemblyReference.cache
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.csproj.CoreCompileInputs.cache
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.csproj.CopyComplete
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.exe
 D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.pdb
+D:\LiYafei\Github\XunitMoqTestDemo\UnitTests.App\obj\Debug\UnitTests.App.csprojAssemblyReference.cache

@@ -18,9 +18,17 @@ namespace UnitTests.App
                 Age = rd.Next(12, 20),
                 Remark="Remarks"+ rd.Next(1, 100000)
             };
-            r.Add(student);
-
-            Console.WriteLine("OK");
+            //int i =r.Add(student);
+            //Console.WriteLine(i);
+            if (r.AddBySql(student))
+            {
+                Console.WriteLine("Success");
+            }
+            else
+            {
+                Console.WriteLine("Failed");
+            }
+            
             Console.Read();
         }
     }
