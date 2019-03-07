@@ -31,7 +31,7 @@ namespace UnitTests.App.Tests
         private ISQLServerHelper prvSqlHelperFeed()
         {
             Mock<ISQLServerHelper> mockObject = new Mock<ISQLServerHelper>();
-            mockObject.Setup(m => m.ExecSql(It.IsAny<string>(), It.IsAny < SqlParameter[]>())).Returns(true); //表示任意string
+            mockObject.Setup(m => m.ExecSql(It.IsAny<string>(), It.IsAny<SqlParameter[]>())).Returns(true); //表示任意string
             return mockObject.Object;
         }
 
@@ -79,7 +79,7 @@ namespace UnitTests.App.Tests
                 ICalculator calculator = new Calculator(feed);
                 int actualResult = calculator.Divide(9, 0);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Assert.True(ex is System.DivideByZeroException);
             }
@@ -95,5 +95,25 @@ namespace UnitTests.App.Tests
             Assert.Equal(expectedResult, actualResult);
         }
         #endregion
+
+        [Theory]
+        [InlineData(1, 2)]
+        [InlineData(0, 2)]
+        [InlineData(2, 2)]
+        //[InlineData(1, 0)]
+        public void ModeTest(int a, int b)
+        {
+            StudentRepositories r = new StudentRepositories();
+            Assert.True(a%b==r.Mode(a,b));
+        }
+
+
+        [Theory]
+        [InlineData(1, 0)]
+        public void ModeTestByZero(int a, int b)
+        {
+            StudentRepositories r = new StudentRepositories();
+            Assert.Throws<System.DivideByZeroException>(() => r.Mode(a,b));
+        }
     }
 }

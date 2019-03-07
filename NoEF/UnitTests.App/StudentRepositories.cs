@@ -38,5 +38,10 @@ namespace UnitTests.App
             bool rs= helper.ExecSql(sql, parameters);
             return rs;
         }
+
+        public int Mode(int no1,int no2)
+        {
+            return no1 % no2;
+        }
     }
 }
