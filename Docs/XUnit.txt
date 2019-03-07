@@ -1,0 +1,182 @@
+舍弃Nunit拥抱Xunit
+前言
+ 　　今天与同事在讨论.Net下测试框架的时候，说到NUnit等大多数测试框架的SetUp以及TearDown方法并不是显得那么完美，所以在公司内部的项目中采用了Xunit框架。那么究竟是什么样的原因，让我们放弃了大多数框架都在用的Nunit或MSTest框架呢？
+
+1. Xunit简介
+　　首先奉上马丁大叔2006年对XUnit介绍的文章，http://www.martinfowler.com/bliki/Xunit.html。
+
+　　Xunit其实是JUnit的衍生版，最开始是应用在Smalltalk中，其目的是支持持续集成，关于单元测试等相关内容可以参考我之前TDD系列文章，这里不做过多的介绍，只是介绍Why we choose Xunit。
+
+　　GitHub地址：https://github.com/xunit/xunit
+
+　　官方文档：http://xunit.github.io/
+
+ 
+
+2. Xunit简单Demo
+如此简单：
+
+ 
+
+提示：需要通过NuGet下载xunit.net和xunit.visualstudio这两个安装包，然后启动“Test Explorer”运行测试，详情请参考这里。
+
+ 
+
+3. Xunit对比Nunit的优点
+这部分内容参考了官方文章以及一些自己对测试框架的场景的理解，如有错误之处，还请指出。
+
+3.1 每个测试单一实例的讨论，SetUp以及TestFixtureSetUp
+　　请参考马丁大师对单一实例的论述：http://martinfowler.com/bliki/JunitNewInstance.html，文章指出：对于测试缓存或每次测试之前重新实例化对象，这种做法是值得商榷的。虽然其有利于对象的调用，而且基本不用考虑对象回收的问题（仅当在TearDown中回收了资源），但这样仍然不符合绝对意义上的“对象隔离”原则。而且有些变量是只需全局实例化一次（在Nunit框架中要使用TestFeature创建），虽然这样也能满足需求，但是程序中还是有很多这种框架的特性需要熟悉，相比没有这些框架（指没有SetUp和TestFixtureSetUp）的语法来讲跟不方便一些，当然这些仅仅是一些思考。
+
+　　同时，James Newkrik也在文章中提到，与其在SetUp中初始化更多的参数，破坏单一职责的原则，另外加上每回测试都要回顾SetUp和TearDown方法所执行的内容，倒不如将其放在Test内部，去掉SetUp和TearDown来增强测试的的表达性以及隔离性。
+
+ 
+
+3.2 Xunit没有ExpectException
+　　不采用Attribute的方式来捕捉异常有两方面的好处：
+
+　　1. 在代码中直接断言（Assert）能捕捉到更多种类的异常。
+
+　　2. 遵守Arrange-Act-Assert (or "3A") 模式：即测试命名上“范围-作用-断言”规范。
+
+复制代码
+public class TestClass1 
+    { 
+        [ Fact ] 
+         public void testException() 
+        { 
+             Assert .Throws< InvalidOperationException >(() => operation()); 
+        } 
+         void operation() 
+        { 
+             throw new InvalidOperationException (); 
+        } 
+    }
+复制代码
+ 
+
+3.3 Xunit更像面向切面的语言
+　　Xunit中使用Fact、Theory、XxxData、Fact(Timeout=n)等标签来组织测试，从功能上讲更像切面编程。 请参考下一节。
+
+ 
+
+3.4 Xunit去除了更多的Attribute
+　　保留很少一部分标签有利于简化测试框架，加快熟悉测试框架的时间，使框架更为简洁、实用。
+
+NUnit 2.2	MSTest	xUnit.net	Comments
+[Test]	[TestMethod]	[Fact]	Marks a test method.
+[TestFixture]	[TestClass]	n/a	xUnit.net does not require an attribute for a test class; it looks for all test methods in all public (exported) classes in the assembly.
+[ExpectedException]	[ExpectedException]	Assert.Throws orRecord.Exception	xUnit.net has done away with the ExpectedException attribute in favor of Assert.Throws. SeeNote 1.
+[SetUp]	[TestInitialize]	Constructor	We believe that use of [SetUp]is generally bad. However, you can implement a parameterless constructor as a direct replacement. See Note 2.
+[TearDown]	[TestCleanup]	IDisposable.Dispose	We believe that use of[TearDown] is generally bad. However, you can implementIDisposable.Dispose as a direct replacement. See Note 2.
+[TestFixtureSetUp]	[ClassInitialize]	IUseFixture<T>	To get per-fixture setup, implement IUseFixture<T> on your test class. See Note 3
+[TestFixtureTearDown]	[ClassCleanup]	IUseFixture<T>	To get per-fixture teardown, implement IUseFixture<T> on your test class. See Note 3
+[Ignore]	[Ignore]	[Fact(Skip="reason")]	Set the Skip parameter on the[Fact] attribute to temporarily skip a test.
+n/a	[Timeout]	[Fact(Timeout=n)]	Set the Timeout parameter on the [Fact] attribute to cause a test to fail if it takes too long to run. Note that the timeout value for xUnit.net is in milliseconds.
+[Property]	[TestProperty]	[Trait]	Set arbitrary metadata on a test
+n/a	[DataSource]	[Theory], [XxxData]	Theory (data-driven test). SeeNote 4
+ 
+
+3.4 Xunit使用IDisposable和IUseFixture<T>接口来代替显示声明SetUp和TestFixtureSetUp
+ 　　首先，创建一个支持IDisposable对象：
+
+复制代码
+using System;
+using System.Configuration;
+using System.Data.SqlClient;
+
+public class DatabaseFixture : IDisposable
+{
+    SqlConnection connection;
+    int fooUserID;
+
+    public DatabaseFixture()
+    {
+        string connectionString = ConfigurationManager.ConnectionStrings["DatabaseFixture"].ConnectionString;
+        connection = new SqlConnection(connectionString);
+        connection.Open();
+
+        string sql = @"INSERT INTO Users VALUES ('foo', 'bar'); SELECT SCOPE_IDENTITY();";
+
+        using (SqlCommand cmd = new SqlCommand(sql, connection))
+            fooUserID = Convert.ToInt32(cmd.ExecuteScalar());
+    }
+
+    public SqlConnection Connection
+    {
+        get { return connection; }
+    }
+
+    public int FooUserID
+    {
+        get { return fooUserID; }
+    }
+
+    public void Dispose()
+    {
+        string sql = @"DELETE FROM Users WHERE ID = @id;";
+
+        using (SqlCommand cmd = new SqlCommand(sql, connection))
+        {
+            cmd.Parameters.AddWithValue("@id", fooUserID);
+            cmd.ExecuteNonQuery();
+        }
+
+        connection.Close();
+    }
+}
+复制代码
+　　最后增加测试，并实现IClassFixture<DatabaseFixture>接口：
+
+复制代码
+using System;
+using System.Configuration;
+using System.Data.SqlClient;
+using Xunit;
+
+public class ClassFixtureTests : IClassFixture<DatabaseFixture>
+{
+    DatabaseFixture database;
+
+    public ClassFixtureTests(DatabaseFixture data)
+    {
+        database = data;
+    }
+
+    [Fact]
+    public void ConnectionIsEstablished()
+    {
+        Assert.NotNull(database.Connection);
+    }
+
+    [Fact]
+    public void FooUserWasInserted()
+    {
+        string sql = "SELECT COUNT(*) FROM Users WHERE ID = @id;";
+
+        using (SqlCommand cmd = new SqlCommand(sql, database.Connection))
+        {
+            cmd.Parameters.AddWithValue("@id", database.FooUserID);
+
+            int rowCount = Convert.ToInt32(cmd.ExecuteScalar());
+
+            Assert.Equal(1, rowCount);
+        }
+    }
+}
+复制代码
+ 　　从这里读者可能体会到，Xunit更多的利用了C#本身的一些特性，而非使用一些特殊的Attribute或者方法（例如SetUp），在设计哲学上更多的考虑了对象自动实现自我管理的机制，而非人为去管理，从某种意义上来讲，解除了部分依赖性，将部分功能交给程序C#本身处理，减少工作量。
+
+ 
+
+4. 文章引用
+Martin Flower介绍Xunit： http://www.martinfowler.com/bliki/Xunit.html
+
+Xunit Github地址：https://github.com/xunit/xunit
+
+Nunit 官方地址：http://www.nunit.org/
+
+周公介绍Xunit：http://zhoufoxcn.blog.51cto.com/792419/1172320/
+
+
+https://www.cnblogs.com/cuiyansong/p/4521124.html

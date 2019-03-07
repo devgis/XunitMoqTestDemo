@@ -71,7 +71,6 @@ namespace UnitTests.App.Tests
             Assert.Equal(expectedResult, actualResult);
         }
         [Fact()]
-        
         public void TC2_DivideByZero()
         {
             try

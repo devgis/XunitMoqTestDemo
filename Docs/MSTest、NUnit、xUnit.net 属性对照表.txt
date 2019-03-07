@@ -1,0 +1,181 @@
+MSTest、NUnit、xUnit.net 属性对照表
+MSTest	NUnit	xUnit.net	Comments
+[TestMethod]	[Test]	[Fact]	
+Marks a test method.
+
+[TestClass]	[TestFixture]	n/a	
+xUnit.net does not require an attribute for a test class; it looks for all test methods in all public (exported) classes in the assembly.
+
+[ExpectedException]	[ExpectedException]	
+Assert.Throws
+
+Record.Exception
+
+xUnit.net has done away with the ExpectedException attribute in favor of Assert.Throws.
+
+[TestInitialize]	[SetUp]	Constructor	
+We believe that use of [SetUp]is generally bad. However, you can implement a parameterless constructor as a direct replacement. 
+
+[TestCleanup]	[TearDown]	IDisposable.Dispose	
+We believe that use of[TearDown] is generally bad. However, you can implementIDisposable.Dispose as a direct replacement.
+
+[ClassInitialize]	[TestFixtureSetUp]	IUseFixture<T>	
+To get per-fixture setup, implement IUseFixture<T> on your test class.
+
+[ClassCleanup]	[TestFixtureTearDown]	IUseFixture<T>	
+To get per-fixture teardown, implement IUseFixture<T> on your test class. 
+
+[Ignore]	[Ignore]	[Fact(Skip="reason")]	
+Set the Skip parameter on the[Fact] attribute to temporarily skip a test.
+
+[Timeout]	[Timeout]	[Fact(Timeout=n)]	
+Set the Timeout parameter on the [Fact] attribute to cause a test to fail if it takes too long to run. Note that the timeout value for xUnit.net is in milliseconds.
+
+[TestCategory]	
+[Category]
+
+[Trait]	 
+[TestProperty]	[Property]	[Trait]	
+Set arbitrary metadata on a test
+
+[DataSource]	n/a	[Theory], [XxxData]	
+Theory (data-driven test).
+
+MSTest、NUnit、xUnit.net 断言对照表
+MSTest	NUnit	xUnit.net	Comments
+AreEqual	AreEqual	Equal	
+MSTest and xUnit.net support generic versions of this method
+
+AreNotEqual	AreNotEqual	NotEqual	
+MSTest and xUnit.net support generic versions of this method
+
+AreNotSame	AreNotSame	
+NotSame
+
+ 
+AreSame	AreSame	
+Same
+
+ 
+Contains 
+
+(on CollectionAssert)
+
+Contains	
+Contains
+
+ 
+n/a	DoAssert	
+n/a
+
+ 
+DoesNotContain 
+
+(on CollectionAssert)
+
+n/a	
+DoesNotContain
+
+ 
+n/a	n/a	DoesNotThrow	
+Ensures that the code does not throw any exceptions
+
+Fail	Fail	n/a	
+xUnit.net alternative:
+
+Assert.True(false, "message")
+
+n/a	Pass	n/a	 
+n/a	Greater	n/a	
+xUnit.net alternative: 
+
+Assert.True(x > y)
+
+n/a	
+GreaterOrEqual
+
+n/a	 
+Inconclusive	Ignore	
+n/a
+
+ 
+n/a	n/a	InRange	
+Ensures that a value is in a given inclusive range (note: NUnit and MSTest have limited support for InRange on their AreEqual methods)
+
+n/a	IsAssignableFrom	
+IsAssignableFrom
+
+ 
+n/a	IsEmpty	
+Empty
+
+ 
+IsFalse	IsFalse	
+False
+
+ 
+IsInstanceOfType	IsInstanceOfType	
+IsType
+
+ 
+n/a	IsNaN	n/a	
+xUnit.net alternative:
+
+Assert.True(double.IsNaN(x))
+
+n/a	IsNotAssignableFrom	n/a	
+xUnit.net alternative: 
+
+Assert.False(obj is Type);
+
+n/a	IsNotEmpty	
+NotEmpty
+
+ 
+IsNotInstanceOfType	IsNotInstanceOfType	
+IsNotType
+
+ 
+IsNotNull	IsNotNull	
+NotNull
+
+ 
+IsNull	IsNull	
+Null
+
+ 
+IsTrue	IsTrue	
+True
+
+ 
+n/a	Less	n/a	
+xUnit.net alternative: 
+
+Assert.True(x < y)
+
+n/a	
+LessOrEqual
+
+n/a	 
+n/a	n/a	
+NotInRange
+
+Ensures that a value is not in a given inclusive range
+
+n/a	Throws	Throws	
+Ensures that the code throws an exact exception
+
+n/a	
+IsAssignableFrom
+
+n/a	 
+n/a	IsNotAssignableFrom	
+n/a
+
+ 
+参考资料
+
+Using Traits with different test frameworks in the Unit Test Explorer
+Testing Framework Comparision with xUnit.net
+
+https://www.cnblogs.com/gaochundong/p/mstest_nunit_xunit_comparisons.html
