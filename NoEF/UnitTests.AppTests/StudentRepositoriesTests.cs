@@ -73,18 +73,13 @@ namespace UnitTests.App.Tests
         [Fact()]
         public void TC2_DivideByZero()
         {
-            try
-            {
+            Assert.Throws<System.DivideByZeroException>(() => {
                 IUSD_RMB_ExchangeRateFeed feed = this.prvGetMockExchangeRateFeed();
                 ICalculator calculator = new Calculator(feed);
                 int actualResult = calculator.Divide(9, 0);
-            }
-            catch (Exception ex)
-            {
-                Assert.True(ex is System.DivideByZeroException);
-            }
-            Assert.True(false, "DivideByZeroException not occured");
+            });
         }
+
         [Fact()]
         public void TC3_ConvertUSDtoRMBTest()
         {
@@ -96,17 +91,15 @@ namespace UnitTests.App.Tests
         }
         #endregion
 
-        [Theory]
+        [Theory(DisplayName = "ModeTest",Timeout =20000)]
         [InlineData(1, 2)]
         [InlineData(0, 2)]
         [InlineData(2, 2)]
-        //[InlineData(1, 0)]
         public void ModeTest(int a, int b)
         {
             StudentRepositories r = new StudentRepositories();
             Assert.True(a%b==r.Mode(a,b));
         }
-
 
         [Theory]
         [InlineData(1, 0)]
