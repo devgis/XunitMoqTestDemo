@@ -1,0 +1,671 @@
+参考文献地址 https://www.cnblogs.com/jams742003/archive/2010/03/02/1676215.html
+
+Moq测试基础说谈（一）——简介，下载
+Moq，就是Mock you。读音可以读成Mock~you。是Mock框架的一种。用于测试中的Mock测试。Mock是模拟的意思。Mock是模拟对象的一种技术。
+
+它可以用于以下情况（引用）：
+
+----- 真实对象具有不可确定的行为(产生不可预测的结果，如股票的行情)
+
+----- 真实对象很难被创建(比如具体的web容器)
+
+----- 真实对象的某些行为很难触发(比如网络错误)
+
+----- 真实情况令程序的运行速度很慢
+
+----- 真实对象有用户界面
+
+----- 测试需要询问真实对象它是如何被调用的(比如测试可能需要验证某个回调函数是否被调用了)
+
+----- 真实对象实际上并不存在(当需要和其他开发小组，或者新的硬件系统打交道的时候，这是一个普遍的问题)
+
+ 
+
+举个明了的例子：在开发一套BS网店系统时，想集中精力开发业务逻辑部分，而不想在数据层上花费太多时间，这时，可以通过Mock对象来模拟数据层，而不必去为数据连接，CRUD，Mapping等等去做太多的事，而又可以使业务测试可以进行下去。
+
+ 
+
+下载地址：
+
+http://code.google.com/p/moq/
+
+这里有一些文档说明。
+
+ 
+
+可以模拟接口和存在的类。在模拟类时有一些限制。类不能是密封的。方法要加上虚修饰符。不能模拟静态方法（可以通过适配器模式来模拟静态方法）。
+
+下边是一个小例子
+
+准备工作：
+
+public interface ITaxCalculator
+
+{
+
+decimal GetTax(decimal rawPrice);
+
+}
+
+ 
+
+public class Product
+
+{
+
+public int ID { get; set; }
+
+public String Name { get; set; }
+
+public decimal RawPrice { get; set; }
+
+ 
+
+public decimal GetPriceWithTax(ITaxCalculator calculator)
+
+{
+
+return calculator.GetTax(RawPrice) + RawPrice;
+
+}
+
+}
+
+ 
+
+测试
+
+public void TestTax()
+
+{
+
+    Product myProduct = new Product { ID = 1, Name = "TV", RawPrice = 25.0M };
+
+    Mock<ITaxCalculator> fakeTaxCalculator = new Mock<ITaxCalculator>();
+
+    fakeTaxCalculator.Setup(tax => tax.GetTax(25.0M)).Returns(5.0M);
+
+ 
+
+    decimal calculatedTax = myProduct.GetPriceWithTax(fakeTaxCalculator.Object);
+
+    fakeTaxCalculator.Verify(tax => tax.GetTax(25.0M));
+
+ 
+
+    Assert.AreEqual(calculatedTax, 30.0M); 
+
+}
+
+ 
+
+其中：
+
+Mock<ITaxCalculator> fakeTaxCalculator = new Mock<ITaxCalculator>();
+
+fakeTaxCalculator.Setup(tax => tax.GetTax(25.0M)).Returns(5.0M);
+
+这部分就是建立Mock对象。
+
+这里其实对GetTax方法进行了模拟：
+
+GetTax(25.0M){return 5.0M;}
+
+ 
+
+当调用myProduct.GetPriceWithTax(fakeTaxCalculator.Object)时，那么，
+
+return calculator.GetTax(RawPrice) + RawPrice;
+
+现在calculator对象已经进行了模拟，GetPriceWithTax返回GetTax的值+RawPrice的值。
+
+此时的Product的RawPrice的值为25.0M，从这个值可以得到tax.GetTax(25.0M)的值是5.0M。而25.0M+5.0M的值是30.0M。所以返回的值是30.0M。这个断言是正确的。
+
+
+
+
+Moq测试基础说谈（二）——Mock方法，方法参数
+准备工作：
+
+public interface ICustomer
+
+{ }
+
+（一）方法
+
+（1）普通的方法
+
+在接口中添加3个方法：
+void AddCall();
+
+string GetCall();
+
+string GetCall(string strUser);
+
+ 
+
+Mock测试：
+
+var customer = new Mock<ICustomer>();
+
+ 
+
+customer.Setup(p=>p.AddCall());
+
+customer.Setup(p => p.GetCall()).Returns("phone:89898789");
+
+customer.Setup(p => p.GetCall("Tom")).Returns("Hello");
+
+ 
+
+customer.Object.AddCall();
+
+Assert.AreEqual("phone:89898789", customer.Object.GetCall());
+
+Assert.AreEqual("Hello", customer.Object.GetCall("Tom"));
+
+ 
+
+先是建立Icustomer接口的mock对象：customer，这个对象执行Icustomer接口的业务。
+
+然后对接口中的三个方法进行依赖添加：
+
+这里只说第三个方法：
+
+customer.Setup(p => p.GetCall("Tom")).Returns("Hello");
+
+customer对象的GetCall方法，传递参数Tom，得到返回值：Hello，相当于：
+
+string GetCall(“Tom”){return “Hello”;}
+
+ 
+
+测试，当调用无参数的GetCall()时，已经得知它会返回：phone:89898789
+
+当调用有参数的GetCall(string)时，如果参数是”Tom”，那么返回：Hello
+
+（2）带有引用或输出参数的方法
+
+string GetAddress(string strUser, out string Address);
+
+string GetFamilyCall(ref string strUser);
+
+ 
+
+var customer = new Mock<ICustomer>();
+
+var outString="oo";
+
+customer.Setup(p => p.GetAddress("", out outString)).Returns("shijiazhuang");
+
+customer.Setup(p => p.GetFamilyCall(ref outString)).Returns("xx");
+
+（3）有返回值的普通方法
+
+还用string GetCall(string strUser);
+
+这个进行测试，这里可以操作参数：
+
+var customer = new Mock<ICustomer>();
+
+customer.Setup(p => p.GetCall(It.IsAny<string>()))
+
+.Returns((string s) => "Hello "+s);
+
+Assert.AreEqual("Hello Tom",customer.Object.GetCall("Tom"));
+
+GetCall方法返回值是：Hello+调用参数
+
+（4）调用方法时抛出异常
+
+方法：void ShowException(string str);
+
+测试：
+
+var customer = new Mock<ICustomer>();
+
+customer.Setup(p => p.ShowException(string.Empty))
+
+.Throws(new Exception("参数不能为空！"));
+
+customer.Object.ShowException("");
+
+ 
+
+如果传入的参数是空值（string.Empty），那么调用这个方法时（Mock调用）就会触发异常。 
+
+（5）调用时赋值
+
+方法：void AddCall();
+
+Mock测试：
+
+var customer = new Mock<ICustomer>();
+
+int iCount = 0;
+
+ 
+
+customer.Setup(p => p.AddCall()).Callback(()=>iCount++);
+
+ 
+
+Assert.AreEqual(0, iCount);
+
+ 
+
+customer.Object.AddCall();
+
+Assert.AreEqual(1, iCount);
+
+ 
+
+customer.Object.AddCall();
+
+Assert.AreEqual(2, iCount);
+
+ 
+
+customer.Object.AddCall();
+
+Assert.AreEqual(3, iCount);
+
+ 
+
+ 
+
+（二）匹配参数
+
+var customer = new Mock<ICustomer>();
+
+customer.Setup(p => p.SelfMatch(It.IsAny<int>()))
+
+.Returns((int k) => "任何数：" + k);
+
+Console.WriteLine(customer.Object.SelfMatch(100));
+
+ 
+
+customer.Setup(p => p.SelfMatch(It.Is<int>(i => i % 2 == 0)))
+
+.Returns("偶数");
+
+Console.WriteLine(customer.Object.SelfMatch(100));
+
+ 
+
+customer.Setup(p => p.SelfMatch(It.IsInRange<int>(0, 10, Range.Inclusive)))
+
+.Returns("10以内的数");
+
+Console.WriteLine(customer.Object.SelfMatch(8));
+
+ 
+
+customer.Setup(p => p.ShowException(It.IsRegex(@"^\d+$")))
+
+.Throws(new Exception("不能是数字"));
+
+customer.Object.ShowException("r4");
+
+ 
+
+It用于添加参数约束，它有以下几个方法：
+
+Is<T>：匹配确定的给定类型
+
+IsAny<T>：匹配给定的任何值
+
+IsInRange<T>：匹配给定类型的范围
+
+IsRegex<T>：正则匹配
+
+ 
+
+通过示例来演示一下：
+
+（1）Is<T>
+
+customer.Setup(x => x.SelfMatch(It.Is<int>(i => i % 2 == 0))).Returns("1");
+
+ 
+
+方法SelfMatch接受int型参数，当参数为偶数时，才返回字符串1。
+
+i=>i%2==0这个表达式的意思在以前的随笔中已经解释过，详细可见：
+
+http://www.cnblogs.com/jams742003/archive/2009/12/23/1630737.html
+
+（2）IsAny<T>
+
+customer.Setup(p => p.SelfMatch(It.IsAny<int>())).Returns((int k) => "任何数：" + k);
+
+ 
+
+方法SelfMatch接受int型，且任何int型参数都可以，然后返回："任何数：" + k。
+
+这里说明一下Returns方法：
+
+ 
+
+Returns(Func<TResult>)
+
+Returns<T>(Func<T,TResult>)
+
+Returns<T1,T2>(Func<T1,T2,TResult>)
+
+Returns<T1,T2,T3>(Func<T1,T2,T3,TResult>)
+
+Returns<T1,T2,T3,T4>(Func<T1,T2,T3,T4,TResult>)
+
+Returns(TResult)
+
+ 
+
+在这个例子中，用到的就是第一种重载，关于Func委托，可以见我的：
+
+http://www.cnblogs.com/jams742003/archive/2009/10/31/1593393.html
+
+因为Func最多接受4个传入参数（有5个重载），所以这里的Returns带有Func委托参数的重载也有5个。
+
+（3）IsInRange<T>
+
+customer.Setup(p => p.SelfMatch(It.IsInRange<int>(0, 10, Range.Inclusive)))
+
+.Returns("10以内的数");
+
+方法SelfMatch接受int型，且当范围在[0,10]时，才返回10以内的数
+
+其中，这个方法，带有一个包含与排除开关。
+
+（4）IsRegex<T>
+
+customer.Setup(p => p.ShowException(It.IsRegex(@"^\d+$")))
+
+.Throws(new Exception("不能是数字"));
+
+
+ 
+
+
+
+
+
+
+http://www.cnblogs.com/haogj/archive/2011/07/22/2113496.html
+http://www.cnblogs.com/haogj/archive/2011/07/22/2113496.html
+http://www.cnblogs.com/haogj/archive/2011/07/22/2113496.html
+http://www.cnblogs.com/haogj/archive/2011/07/22/2113496.html
+http://www.cnblogs.com/haogj/archive/2011/07/22/2113496.html
+http://www.cnblogs.com/haogj/archive/2011/07/22/2113496.html
+http://www.cnblogs.com/haogj/archive/2011/07/22/2113496.html
+http://www.cnblogs.com/haogj/archive/2011/07/22/2113496.html
+http://www.cnblogs.com/haogj/archive/2011/07/22/2113496.html
+
+ moq 的常用使用方法
+ 
+
+测试方法
+复制代码
+ 1 // 准备 Mock IFoo 接口
+ 2 var mock = new Mock<IFoo>(); 
+ 3 // 配置准备模拟的方法，当调用接口中的 DoSomething 方法，并传递参数 "bing" 的时候，返回 true
+ 4 mock.Setup(foo => foo.DoSomething("ping")).Returns(true);   
+ 5 
+ 6 // 方法的参数中使用了 out 参数
+ 7 // out arguments 
+ 8 var outString = "ack"; 
+ 9 // 当调用 TryParse 方法的时候，out 参数返回 "ack", 方法返回 true, lazy evaluated 
+10 mock.Setup(foo => foo.TryParse("ping", out outString)).Returns(true);   
+11 
+12 // ref 参数
+13 var instance = new Bar(); 
+14 // 仅仅在使用 ref 调用的时候，才会匹配下面的测试
+15 mock.Setup(foo => foo.Submit(ref instance)).Returns(true);  
+16  
+17 // 当方法返回值得时候，还可以访问返回的值
+18 // 这里可以使用多个参数
+19 mock.Setup(x => x.DoSomething(It.IsAny<string>()))
+20                  .Returns((string s) => s.ToLower()); 
+21 
+22 // 在被调用的时候抛出异常
+23 mock.Setup(foo => foo.DoSomething("reset")).Throws<InvalidOperationException>(); 
+24 mock.Setup(foo => foo.DoSomething("")).Throws(new ArgumentException("command");   
+25 
+26 // 延迟计算返回的结果 
+27 mock.Setup(foo => foo.GetCount()).Returns(() => count);   
+28 
+29 // 在每一次调用的时候，返回不同的值 
+30 var mock = new Mock<IFoo>(); 
+31 var calls = 0; 
+32 mock.Setup(foo => foo.GetCountThing())
+33      .Returns(() => calls)
+34      .Callback(() => calls++); 
+35 
+36 // 第一次调用返回 0， 下一次是 1， 依次类推
+37 Console.WriteLine(mock.Object.GetCountThing());
+复制代码
+ 
+
+匹配参数
+复制代码
+ 1 // 任意值 
+ 2 mock.Setup(foo => foo.DoSomething(It.IsAny<string>())).Returns(true);   
+ 3 
+ 4 // 提供的值必须匹配一个函数, lazy evaluated 
+ 5 mock.Setup(foo => foo.Add(It.Is<int>(i => i % 2 == 0))).Returns(true);    
+ 6 
+ 7 // 匹配一个范围 
+ 8 mock.Setup(foo => foo.Add(It.IsInRange<int>(0, 10, Range.Inclusive))).Returns(true);    
+ 9 
+10 // 匹配正则表达式
+11 mock.Setup(x => x.DoSomething(It.IsRegex("[a-d]+", RegexOptions.IgnoreCase))).Returns("foo");
+复制代码
+ 
+
+属性
+复制代码
+ 1 // 普通属性
+ 2 mock.Setup(foo => foo.Name).Returns("bar");   
+ 3 
+ 4 // 多层的属性
+ 5 mock.Setup(foo => foo.Bar.Baz.Name).Returns("baz");  
+ 6 
+ 7 // 期望设置属性的值为 "foo" 
+ 8 mock.SetupSet(foo => foo.Name = "foo");  
+ 9 
+10 // 或者直接验证赋值 
+11 mock.VerifySet(foo => foo.Name = "foo");
+复制代码
+ 
+
+设置属性，以便自动跟踪它的值
+
+复制代码
+ 1 // 开始 "tracking" 属性的 sets/gets 
+ 2 mock.SetupProperty(f => f.Name);  
+ 3 
+ 4 // 提供一个默认的值
+ 5 mock.SetupProperty(f => f.Name, "foo");   
+ 6 
+ 7 // 现在，你可以:  
+ 8 IFoo foo = mock.Object; 
+ 9 
+10 // 保存的值 
+11 Assert.Equal("foo", foo.Name);  
+12 
+13 // 重新设置一个值
+14 foo.Name = "bar"; 
+15 Assert.Equal("bar", foo.Name);
+复制代码
+ 
+
+还可以准备所有的属性
+
+mock.SetupAllProperties();
+ 
+
+事件
+复制代码
+ 1 // 抛出一个事件 
+ 2 mock.Raise(m => m.FooEvent += null, new FooEventArgs(fooValue));  
+ 3 
+ 4 // 多层的后代中的事件 
+ 5 mock.Raise(m => m.Child.First.FooEvent += null, new FooEventArgs(fooValue));  
+ 6 
+ 7 // 当 Submit 方法被调用的时候，抛出一个事件 
+ 8 mock.Setup(foo => foo.Submit()).Raises(f => f.Sent += null, EventArgs.Empty); 
+ 9 
+10 // 抛出异常将会触发对象底层的行为
+11 // 你可能需要在后面进行断言处理
+12 
+13 // 抛出一个自定义的事件
+14 public delegate void MyEventHandler(int i, bool b); 
+15 public interface IFoo {   event MyEventHandler MyEvent;  }  
+16 var mock = new Mock<IFoo>(); 
+17 ... 
+18 
+19 // 传递自定义的事件参数
+20 mock.Raise(foo => foo.MyEvent += null, 25, true);
+复制代码
+ 
+
+ 回调
+复制代码
+ 1 var mock = new Mock<IFoo>(); 
+ 2 mock.Setup(foo => foo.Execute("ping"))
+ 3      .Returns(true)
+ 4      .Callback(() => calls++);   
+ 5 
+ 6 // 使用调用的参数 
+ 7 mock.Setup(foo => foo.Execute(It.IsAny<string>()))
+ 8      .Returns(true)
+ 9      .Callback((string s) => calls.Add(s));  
+10 
+11 // 使用泛型语法 
+12 mock.Setup(foo => foo.Execute(It.IsAny<string>()))
+13      .Returns(true)
+14      .Callback<string>(s => calls.Add(s));  
+15 
+16 // 使用多个参数
+17 mock.Setup(foo => foo.Execute(It.IsAny<int>(), It.IsAny<string>()))
+18      .Returns(true)
+19      .Callback<int, string>((i, s) => calls.Add(s));  
+20 
+21 // 调用之前和之后的回调 
+22 mock.Setup(foo => foo.Execute("ping"))
+23      .Callback(() => Console.WriteLine("Before returns"))
+24      .Returns(true)
+25      .Callback(() => Console.WriteLine("After returns"));
+复制代码
+ 
+
+验证
+复制代码
+ 1 mock.Verify(foo => foo.Execute("ping"));  
+ 2 
+ 3 // 在验证失败的时候，提供自定义的错误提示信息 
+ 4 mock.Verify(foo => foo.Execute("ping"), "When doing operation X, the service should be pinged always");  
+ 5 
+ 6 // 从没有被调用的方法 
+ 7 mock.Verify(foo => foo.Execute("ping"), Times.Never());  
+ 8 
+ 9 // 至少调用过一次 
+10 mock.Verify(foo => foo.Execute("ping"), Times.AtLeastOnce());  
+11 mock.VerifyGet(foo => foo.Name);  
+12 
+13 // 验证对属性的赋值. 
+14 mock.VerifySet(foo => foo.Name);  
+15 
+16 // 验证对于属性设置特定的值 
+17 mock.VerifySet(foo => foo.Name ="foo");  
+18 
+19 // 验证匹配的参数 
+20 mock.VerifySet(foo => foo.Value = It.IsInRange(1, 5, Range.Inclusive));
+复制代码
+ 
+
+ 自定义 Mock 行为
+Mock 的行为分为严格的 Strict 和宽松的 Loose， 默认为宽松的。在严格模式下，使用任何没有被指定的行为，都将会抛出异常，宽松模式下，不会抛出任何异常，方法将会返回默认值或者空的数组等等。
+
+var mock = new Mock<IFoo>(MockBehavior.Strict);
+ 
+
+如果没有重写基类的实现，默认将不会调用基类，在 Mock Web/Html 控件的是必须的。
+
+var mock = new Mock<IFoo> { CallBase = true };
+ 
+
+ 创造自动递归的 Mock, Mock 对象对于它的任何成员将会返回一个新的 Mock 对象。
+
+ 
+
+复制代码
+var mock = new Mock<IFoo> { DefaultValue = DefaultValue.Mock }; 
+
+// 默认是 DefaultValue.Empty  
+// 现在这个属性将会返回一个新的 Mock 对象 
+IBar value = mock.Object.Bar;  
+
+// 可以使用返回的 Mock 对象, 后即对属性的访问返回相同的对象实例
+// 这就允许我们可以进行后继的设置  
+// set further expectations on it if we want 
+var barMock = Mock.Get(value); 
+barMock.Setup(b => b.Submit()).Returns(true);
+复制代码
+ 
+
+中心化的 Mock 实例创建和管理：你可以在一个地方使用 MockRepository 创建和验证所有的 Mock 对象，设置 MockBehavior, CallBse 和 DefaultValue 约束。
+
+复制代码
+var factory = new MockFactory(MockBehavior.Strict) { DefaultValue = DefaultValue.Mock };  
+
+// 创建 Mock 对象
+var fooMock = factory.Create<IFoo>();  
+
+// 在创建的时候重写仓库的设置 
+var barMock = factory.Create<IBar>(MockBehavior.Loose);  
+
+// 验证通过仓库创建的对象 
+factory.Verify();
+复制代码
+ 
+
+其它
+复制代码
+// 用在测试用例的开始 
+using Moq.Protected()  
+
+// 测试中
+var mock = new Mock<CommandBase>(); mock.Protected()
+      .Setup<int>("Execute")
+      .Returns(5);  
+
+// 如果用到了参数匹配, 必须使用 ItExpr 来代替 It 
+// 以后计划改进
+mock.Protected()
+     .Setup<string>("Execute",         ItExpr.IsAny<string>())
+     .Returns(true);
+复制代码
+ 
+
+高级特性
+复制代码
+ 1 // 从 Mock 实例重新获得 Mock 对象
+ 2 IFoo foo = // get mock instance somehow 
+ 3 var fooMock = Mock.Get(foo); 
+ 4 fooMock.Setup(f => f.Submit()).Returns(true);   
+ 5 
+ 6 // 实现多个接口 
+ 7 var foo = new Mock<IFoo>(); 
+ 8 var disposableFoo = foo.As<IDisposable>(); 
+ 9 
+10 // 现在 IFoo mock 已经实现了接口 IDisposable :) disposableFoo.Setup(df => df.Dispose());   
+11 
+12 // 定制匹配 
+13 mock.Setup(foo => foo.Submit(IsLarge())).Throws<ArgumentException>(); ... 
+14 public string IsLarge()  
+15 {
+16     return Match<string>.Create(s => !String.IsNullOrEmpty(s) && s.Length > 100); 
+17 }
+复制代码
