@@ -15,3 +15,11 @@ D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\obj\Debug\UnitTests.App.pd
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\UnitTests.App.exe.config
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\UnitTests.App.exe
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\UnitTests.App.pdb
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\Castle.Core.dll
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\System.Threading.Tasks.Extensions.dll
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\Castle.Core.xml
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\bin\Debug\System.Threading.Tasks.Extensions.xml
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\obj\Debug\UnitTests.App.csprojAssemblyReference.cache
+D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.App\obj\Debug\UnitTests.App.csproj.CopyComplete
