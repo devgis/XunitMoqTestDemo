@@ -25,7 +25,6 @@ D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\Moq.dll
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\System.Threading.Tasks.Extensions.dll
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\Castle.Core.xml
-D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\Moq.pdb
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\Moq.xml
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests\bin\Debug\System.Threading.Tasks.Extensions.xml

@@ -17,7 +17,6 @@ D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests1\bin\Debug\UnitTests.
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests1\bin\Debug\UnitTests.App.pdb
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests1\bin\Debug\UnitTests.App.exe.config
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests1\bin\Debug\Castle.Core.xml
-D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests1\bin\Debug\Moq.pdb
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests1\bin\Debug\Moq.xml
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests1\bin\Debug\nunit.framework.pdb
 D:\LiYafei\Github\XunitMoqTestDemo\NoEF\UnitTests.AppTests1\bin\Debug\nunit.framework.xml
